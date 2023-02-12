@@ -1,15 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react"; // eslint-disable-line
+import { useQuery } from "@tanstack/react-query"; // eslint-disable-line
+import React from "react"; // eslint-disable-line
 import { Result } from "../Contants"; // eslint-disable-line
-import fetchItem from "../FetchData/fetchItems";
+import fetchItem from "../FetchData/fetchItems"; // eslint-disable-line
 
-const Items = () => {
-  const [requestdata, setrequestData] = useState({
-    title: "",
-    body: "",
-  }); // eslint-disable-line
+const Items = (items) => {
+  const { data, error, isError, isLoading } = useQuery("users", fetchItem);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error! {error.message}</div>;
 
-  const results = useQuery(["items", requestdata], fetchItem);
+  // const [requestdata, setrequestData] = useState({
+  //   title: "",
+  //   body: "",
+  // }); // eslint-disable-line
+
+  // const results = useQuery(["items", requestdata], fetchItem);
   return (
     <div>
       <div className="w-full">
@@ -25,6 +29,16 @@ const Items = () => {
         </div>
         {/* grid */}
         <div>
+          <div className="grid">
+            {data.map((posts, id) => {
+              return (
+                <div key={id} className="mb-20 w-8">
+                  <h1>{posts.title}</h1>
+                  <p>{posts.body}</p>
+                </div>
+              );
+            })}
+          </div>
           <Result posts={items} />
         </div>
       </div>
